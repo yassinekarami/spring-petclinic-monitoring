@@ -1,21 +1,60 @@
 services:
-  mysql:
-    image: mysql:9.7
+  spring:
+    build: .
     ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_USER=petclinic
-      - MYSQL_PASSWORD=petclinic
-      - MYSQL_DATABASE=petclinic
+      - "8082:8080"
     volumes:
-      - "./conf.d:/etc/mysql/conf.d:ro"
-  postgres:
-    image: postgres:18.4
-    ports:
-      - "5432:5432"
+      - ./src/main/resources/logback-spring.xml:/app/logback-spring.xml
     environment:
-      - POSTGRES_PASSWORD=petclinic
-      - POSTGRES_USER=petclinic
-      - POSTGRES_DB=petclinic
+      JAVA_TOOL_OPTIONS: "-Dlogback.configurationFile=/app/logback-spring.xml"
+#    depends_on:
+#      - elastic
+#    networks:
+#      - elastic
+
+#  elastic:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.2
+#    ports:
+#      - "9200:9200"
+#    environment:
+#      - discovery.type=single-node
+#      - xpack.security.enabled=false
+#      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+#    mem_limit: 1g
+#    networks:
+#      - elastic
+#
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:8.17.2
+#    ports:
+#      - "5601:5601"
+#    environment:
+#      - ELASTICSEARCH_HOSTS=http://elastic:9200
+#      - NODE_OPTIONS=--max-old-space-size=512
+#    mem_limit: 768m
+#    depends_on:
+#      - elastic
+#    networks:
+#      - elastic
+#
+#  fluent-bit:
+#    image: cr.fluentbit.io/fluent/fluent-bit:2.0
+#    volumes:
+#      - ./fluent-bit.yml:/fluent-bit/etc/fluent-bit.yml
+#    depends_on:
+#      - elastic
+#    networks:
+#      - elastic
+
+networks:
+  elastic:
+    driver: bridge
+
+
+#docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:9.4.4
+#https://www.elastic.co/docs/deploy-manage/security/set-up-minimal-security#_enable_es_security_features
+
+
+#elastic password xli2TWrOMe1PVAXYsRW-
+#kibana system password KMUUIDJp5P8vwSKVbYjg
+#elastic enrolment token eyJ2ZXIiOiI4LjE0LjAiLCJhZHIiOlsiMTcyLjIwLjAuMzo5MjAwIl0sImZnciI6ImJmYzIyMzQ5NzM1ZTY4NmY0ZTg1YjAzYjMwMmZmOTAwM2UzYzQ1M2Q2ZTMwNTRhMTFhOGU0MTc2OTg3NWMxZWYiLCJrZXkiOiJFajJoc3A4QlZEM3RQUHE0X0N3QjpDRmlXeVAxSFBYMVkwRXZiMWxCNHdBIn0=
