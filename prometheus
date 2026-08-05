@@ -35,3 +35,9 @@ https://prometheus.io/
 
 
 kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-np
+
+
+mvn clean package
+docker build -t spring-petclinic-monitoring-spring:latest .
+minikube image load spring-petclinic-monitoring-spring:latest
+kubectl rollout restart deployment petclinic

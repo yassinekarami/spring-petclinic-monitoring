@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: k6-performance
+spec:
+  suspend: true
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: k6
+              image: grafana/k6
+              imagePullPolicy: IfNotPresent
+              command:
+                - k6
+                - run
+                -  -o
+                - experimental-prometheus-rw
+                - /etc/config/performance.js
+              env:
+                - name: K6_PROMETHEUS_RW_SERVER_URL
+                  value: 'http://prometheus-kube-prometheus-prometheus:9090/api/v1/write'
+                - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
+                  value: "true"
+              volumeMounts:
+                - name: script-volume
+                  mountPath: /etc/config
+                  readOnly: true
+          restartPolicy: OnFailure
+
+          volumes:
+            - name: script-volume
+              configMap:
+                name: script-config
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-config
+data:
+  performance.js: |
+    import http from 'k6/http';
+    import { sleep } from 'k6';
+    export const options = {
+      vus: 10,
+      duration: '30s',
+    };
+    export default function () {
+    http.get('http://10.101.139.235:8080/vets');
+    sleep(1);
+    }

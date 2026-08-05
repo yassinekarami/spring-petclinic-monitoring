@@ -19,8 +19,11 @@ spec:
         - name: petclinic
           image: spring-petclinic-monitoring-spring:latest
           imagePullPolicy: IfNotPresent
+
           ports:
-            - containerPort: 8082
+            - name: petclinic-port
+              containerPort: 8080
+
           resources:
             requests:
               cpu: "100m"
@@ -29,17 +32,60 @@ spec:
               cpu: "500m"
               memory: "256Mi"
 
+          volumeMounts:
+            - name: petclinic-config
+              mountPath: /config
+
+          env:
+            - name: SPRING_CONFIG_ADDITIONAL_LOCATION
+              value: "file:/config/application.properties"
+
+      volumes:
+        - name: petclinic-config
+          configMap:
+            name: petclinic-config
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: petclinic-config
+data:
+  application.properties: |
+    management.endpoints.web.exposure.include=health,info,metrics,prometheus
+    management.endpoint.prometheus.enabled=true
+    management.metrics.export.prometheus.enabled=true
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: petclinic-service
+  labels:
+    app: petclinic-service
 spec:
   selector:
     app: petclinic
   type: NodePort
   ports:
-    - protocol: TCP
+    - name: petclinic-port
+      protocol: TCP
       port: 8080
       targetPort: 8080
       nodePort: 31000
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spring-petclinic
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: petclinic-service
+  endpoints:
+    - port: petclinic-port
+      path: /actuator/prometheus
