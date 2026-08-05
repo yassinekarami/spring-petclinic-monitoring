@@ -21,7 +21,7 @@ spec:
                 - /etc/config/performance.js
               env:
                 - name: K6_PROMETHEUS_RW_SERVER_URL
-                  value: 'http://prometheus-kube-prometheus-prometheus:9090/api/v1/write'
+                  value: 'http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write'
                 - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
                   value: "true"
               volumeMounts:
@@ -50,6 +50,6 @@ data:
       duration: '30s',
     };
     export default function () {
-    http.get('http://10.101.139.235:8080/vets');
+    http.get('http://petclinic-service.default.svc.cluster.local:8080/vets');
     sleep(1);
     }

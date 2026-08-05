@@ -26,5 +26,8 @@ NOTES:
 #################################################################################
 
 username admin
-password OUf2HPhXVXepzVKGlsXfFYEtIg44jXi3RpzZjM2S
-password 1aTdgJP8hatk0smJLQeGKKDh0KVrFeYpQqqLET4M
+password qdLyTC6f84Qj9p7Ar4cZc0l14MWb6thYFNIE7Jg2
+
+récupéré le mot de passe grafana
+kubectl --namespace monitoring get secrets prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+

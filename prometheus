@@ -41,3 +41,8 @@ mvn clean package
 docker build -t spring-petclinic-monitoring-spring:latest .
 minikube image load spring-petclinic-monitoring-spring:latest
 kubectl rollout restart deployment petclinic
+
+
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
