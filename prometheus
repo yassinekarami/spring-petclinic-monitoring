@@ -46,3 +46,13 @@ kubectl rollout restart deployment petclinic
 helm install prometheus prometheus-community/kube-prometheus-stack \
   --namespace monitoring \
   --create-namespace
+
+
+helm upgrade prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --set alertmanager.enabled=true \
+  --set alertmanager.service.type=NodePort \
+  --set alertmanager.service.nodePort=30093
+
+
+kubectl exec -it petclinic-89ffd87cb-k2grl  -- curl http://localhost:8080/actuator/health
