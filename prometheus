@@ -55,4 +55,4 @@ helm upgrade prometheus prometheus-community/kube-prometheus-stack \
   --set alertmanager.service.nodePort=30093
 
 
-kubectl exec -it petclinic-89ffd87cb-k2grl  -- curl http://localhost:8080/actuator/health
+kubectl exec -it petclinic-89ffd87cb-k2grl  -- curl http://10.244.0.46:8080/actuator/health

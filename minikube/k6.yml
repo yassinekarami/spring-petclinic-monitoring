@@ -24,9 +24,15 @@ spec:
                   value: 'http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/api/v1/write'
                 - name: K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM
                   value: "true"
+              envFrom:
+                - configMapRef:
+                    name: script-config-values
               volumeMounts:
                 - name: script-volume
                   mountPath: /etc/config
+                  readOnly: true
+                - name: script-volume-values
+                  mountPath: /etc/config-values
                   readOnly: true
           restartPolicy: OnFailure
 
@@ -34,6 +40,9 @@ spec:
             - name: script-volume
               configMap:
                 name: script-config
+            - name: script-volume-values
+              configMap:
+                name: script-config-values
 
 
 ---
@@ -46,10 +55,19 @@ data:
     import http from 'k6/http';
     import { sleep } from 'k6';
     export const options = {
-      vus: 10,
-      duration: '30s',
+      vus: Number(__ENV.VUS || 10),
+      duration: __ENV.DURATION || '30s',
     };
     export default function () {
     http.get('http://petclinic-service.default.svc.cluster.local:8080/vets');
     sleep(1);
     }
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-config-values
+data:
+  VUS: "10"
+  DURATION: "30s"
