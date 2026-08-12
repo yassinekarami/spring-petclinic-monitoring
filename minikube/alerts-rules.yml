@@ -23,6 +23,35 @@ spec:
             description: "The deployment petclinic has no running pod available for more than 2 minutes."
             runbook_url: "https://wiki/runbooks/petclinic-down"
 
+        - alert: HttpRequestsExceeded
+          expr: |
+            rate(k6_http_reqs_total[1m]) > 100
+          for: 2m
+          labels:
+            severity: warning
+            team: backend
+          annotations:
+            summary: "petclinic is receiving a lot of http request"
+            description: "many request has been received within 10 seconds"
+            __dashboardUid__: "ccbb2351-2ae2-462f-ae0e-f2c893ad1028"
+            __panelId__: "4"
+
+        - alert: HttpRequestDurationExceeded
+          expr: |
+            histogram_quantile(
+              0.95,
+              rate(k6_http_req_duration_seconds[5m])
+            ) > 0.01
+          for: 2m
+          labels:
+            severity: warning
+            team: backend
+          annotations:
+            summary: "PetClinic HTTP request duration is high"
+            description: "The p95 HTTP request duration has exceeded 1 second for the last 2 minutes."
+            __dashboardUid__: "ccbb2351-2ae2-462f-ae0e-f2c893ad1028"
+            __panelId__: "21"
+
 
         # Pod présent mais non Ready
         - alert: PodNotReady
@@ -42,7 +71,7 @@ spec:
 
 
         # Prometheus ne scrape plus l'application
-        - alert: MyAppMetricsMissing
+        - alert: PetclinicMetricMissing
           expr: |
             absent(up{job="petclinic"})
           for: 5m
@@ -55,7 +84,7 @@ spec:
 
 
         # Taux d'erreur HTTP élevé
-        - alert: MyAppHighErrorRate
+        - alert: PetclinicHighErrorRate
           expr: |
             sum(rate(http_requests_total{job="petclinic", status=~"5.."}[5m]))
             /
@@ -67,3 +96,7 @@ spec:
           annotations:
             summary: "Error rate > 5%"
             description: "The application error rate is above 5% for more than 3 minutes."
+            __dashboardUid__: "ccbb2351-2ae2-462f-ae0e-f2c893ad1028"
+            __panelId__: "22"
+
+

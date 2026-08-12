@@ -22,17 +22,17 @@ spec:
           ports:
             - name: petclinic-port
               containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 300
-            periodSeconds: 10
+#          livenessProbe:
+#            httpGet:
+#              path: /actuator/health/liveness
+#              port: 8080
+#            initialDelaySeconds: 600
+#            periodSeconds: 10
 #          readinessProbe:
 #            httpGet:
 #              path: /actuator/health/readiness
 #              port: 8080
-#            initialDelaySeconds: 300
+#            initialDelaySeconds: 600
 #            periodSeconds: 5
           resources:
             requests:

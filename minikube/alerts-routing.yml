@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: email-alerts
+  namespace: monitoring
+  labels:
+    release: prometheus
+spec:
+  route:
+    receiver: outlook-email
+    matchers:
+      - name: team
+        matchType: "="
+        value: backend
+
+  receivers:
+    - name: outlook-email
+      emailConfigs:
+        - to: ""
+          from: ""
+          smarthost: "smtp.office365.com:587"
+          authUsername: ""
+          authPassword:
+            name: smtp-credentials
+            key: ""
+          requireTLS: true
