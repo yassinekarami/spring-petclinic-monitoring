@@ -1,0 +1,38 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elastic
+spec:
+  version: 8.17.2
+  nodeSets:
+    - name: default
+      count: 1
+      config:
+        node.store.allow_mmap: false
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data-elastic-es-default-0
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: standard
+            resources:
+              requests:
+                storage: 1Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: elastic
+  name: elastic-service
+spec:
+  selector:
+    app:  elastic-es-http
+  type: NodePort
+  ports:
+    - name: elastic-http-port
+      protocol: TCP
+      port: 9200
+      targetPort: 9200
+      nodePort: 31002

@@ -1,0 +1,26 @@
+name: Terraform deployment
+
+on: pull_request
+
+env:
+  TF_API_TOKEN: "${{ secrets.TF_API_KEY }}"
+  ACCESS_KEY: "${{ secrets.ACCESS_KEY }}"
+  ORGANIZATION_ID: "${{ secrets.ORGANIZATION_ID }}"
+  PROJECT_ID: "${{ secrets.PROJECT_ID }}"
+  SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+
+jobs:
+  terraform:
+    name: Terraform plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check environment variables
+        run: |
+          [ -n "$TF_API_TOKEN" ] && echo "TF_API_TOKEN is set" || echo "TF_API_TOKEN is NOT set"
+          [ -n "$ACCESS_KEY" ] && echo "ACCESS_KEY is set" || echo "ACCESS_KEY is NOT set"
+          [ -n "$ORGANIZATION_ID" ] && echo "ORGANIZATION_ID is set" || echo "ORGANIZATION_ID is NOT set"
+          [ -n "$PROJECT_ID" ] && echo "PROJECT_ID is set" || echo "PROJECT_ID is NOT set"
+          [ -n "$SECRET_KEY" ] && echo "SECRET_KEY is set" || echo "SECRET_KEY is NOT set"
+
+
+
