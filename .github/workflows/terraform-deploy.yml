@@ -1,6 +1,6 @@
 name: Terraform deployment
 
-on: pull_request
+on: workflow_dispatch
 
 env:
   TF_API_TOKEN: "${{ secrets.TF_API_KEY }}"
