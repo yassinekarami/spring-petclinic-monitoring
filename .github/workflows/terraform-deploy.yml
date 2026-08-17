@@ -24,13 +24,24 @@ jobs:
           [ -n "$SECRET_KEY" ] && echo "SECRET_KEY is set" || echo "SECRET_KEY is NOT set"
 
   terraform:
-    name: Plan
-    runs-on: hashicorp/terraform:latest
+    name: Terraform
+    runs-on: ubuntu-latest
     environment: env
     steps:
-      - name: Plan
+      - name: Code checkout
+        uses: actions/checkout@v4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "1.14.6"
+      - name: Terraform init
         run: | 
+          terraform init
           terraform plan
+      - name: Terraform apply
+        #run: terraform apply -auto-approve
+        run: echo "terraform apply"
+        
 
 
 
