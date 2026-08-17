@@ -13,6 +13,7 @@ jobs:
   terraform:
     name: Terraform plan
     runs-on: ubuntu-latest
+    environment: env
     steps:
       - name: Check environment variables
         run: |
