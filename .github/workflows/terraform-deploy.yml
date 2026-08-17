@@ -36,6 +36,8 @@ jobs:
           terraform_version: "1.14.6"
       - name: Terraform init
         run: | 
+          mkkdir terraformconfig
+          cd ./terraformconfig
           terraform init
           terraform plan
       - name: Terraform apply
