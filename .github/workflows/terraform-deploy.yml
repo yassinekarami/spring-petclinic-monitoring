@@ -10,8 +10,8 @@ env:
   SECRET_KEY: "${{ secrets.SECRET_KEY }}"
 
 jobs:
-  terraform:
-    name: Terraform plan
+  variable:
+    name: Check variable
     runs-on: ubuntu-latest
     environment: env
     steps:
@@ -23,5 +23,18 @@ jobs:
           [ -n "$PROJECT_ID" ] && echo "PROJECT_ID is set" || echo "PROJECT_ID is NOT set"
           [ -n "$SECRET_KEY" ] && echo "SECRET_KEY is set" || echo "SECRET_KEY is NOT set"
 
+  terraform:
+    name: Plan
+    runs-on: hashicorp/terraform:latest
+    environment: env
+    steps:
+      - name: Plan
+        run: | 
+          terraform plan
+
+
+
+        
+        
 
 
