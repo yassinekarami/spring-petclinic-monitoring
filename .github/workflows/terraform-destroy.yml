@@ -14,6 +14,10 @@ jobs:
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.14.6"
+      - name: Terraform Init
+        working-directory: infrastructure/terraform
+        run: |
+          terraform init
       - name: Destroy
         working-directory:  infrastructure/terraform
         run: |
