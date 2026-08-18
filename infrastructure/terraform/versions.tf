@@ -8,7 +8,6 @@ terraform {
     bucket = "terraform-s3"
     key = "terraform.tfstate"
     region   = "fr-par"
-    endpoint = "s3.fr-par.scw.cloud"
     endpoints = {
         s3 = "https://s3.fr-par.scw.cloud"
     }
