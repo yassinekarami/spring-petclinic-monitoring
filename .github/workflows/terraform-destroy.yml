@@ -2,6 +2,13 @@ name: Terraform destroy
 
 on: workflow_dispatch
 
+env:
+  TF_VAR_API_TOKEN: "${{ secrets.TF_API_KEY }}"
+  TF_VAR_access_key: "${{ secrets.ACCESS_KEY }}"
+  TF_VAR_organization_id: "${{ secrets.ORGANIZATION_ID }}"
+  TF_VAR_project_id: "${{ secrets.PROJECT_ID }}"
+  TF_VAR_secret_key: "${{ secrets.SECRET_KEY }}"
+  
 jobs:
   terraform:
     name: destroy
@@ -17,7 +24,9 @@ jobs:
       - name: Terraform Init
         working-directory: infrastructure/terraform
         run: |
-          terraform init
+          terraform init \
+            -backend-config="access_key=${{ secrets.ACCESS_KEY }}" \
+            -backend-config="secret_key=${{ secrets.SECRET_KEY }}"
       - name: Destroy
         working-directory:  infrastructure/terraform
         run: |
