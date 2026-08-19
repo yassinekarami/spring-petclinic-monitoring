@@ -86,22 +86,14 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
 
-      - name: Install Scaleway CLI
-        run: |
-          curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
-
-      - name: Configure Scaleway CLI
-        env:
-          SCW_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-          SCW_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          SCW_DEFAULT_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        run: |
-          scw init \
-            access-key="$SCW_ACCESS_KEY" \
-            secret-key="$SCW_SECRET_KEY" \
-            project-id="$SCW_DEFAULT_PROJECT_ID" \
-            send-telemetry=false
-
+      - name: Setup Scaleway CLI
+        uses: scaleway/action-scw@v0
+        with:
+          access-key: ${{ secrets.ACCESS_KEY }}
+          secret-key: ${{ secrets.SECRET_KEY }}
+          default-project-id: ${{ secrets.PROJECT_ID }}
+          default-organization-id: ${{ secrets.ORGANIZATION_ID }}
+          
       - name: Configure kubeconfig
         env:
           CLUSTER_ID: ${{ needs.terraform.outputs.cluster_id }}
