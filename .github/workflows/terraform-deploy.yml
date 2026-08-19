@@ -11,9 +11,10 @@ env:
 
 jobs:
   variable:
-    name: Check variable
+    name: Check variables
     runs-on: ubuntu-latest
     environment: env
+
     steps:
       - name: Check environment variables
         run: |
@@ -27,30 +28,78 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
     environment: env
+
+    outputs:
+      kubeconfig: ${{ steps.terraform-output.outputs.kubeconfig }}
+
     steps:
       - name: Code checkout
         uses: actions/checkout@v4
+
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: "1.14.6"
+
       - name: Terraform init
         working-directory: infrastructure/terraform
-        run: | 
-          terraform init
+        run: terraform init
+
       - name: Terraform plan
         working-directory: infrastructure/terraform
-        run: |
-          terraform plan
+        run: terraform plan
+
       - name: Terraform apply
         working-directory: infrastructure/terraform
+        run: terraform apply -auto-approve
+
+      - name: Get Terraform kubeconfig
+        id: terraform-output
+        working-directory: infrastructure/terraform
         run: |
-          terraform apply -auto-approve
-        
+          kubeconfig=$(terraform output -raw kubeconfig)
+          echo "::add-mask::$kubeconfig"
 
+          {
+            echo "kubeconfig<<EOF"
+            echo "$kubeconfig"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
+  kubernetes_deploy:
+    name: Kubernetes
+    needs: [terraform]
+    runs-on: ubuntu-latest
+    environment: env
 
-        
-        
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v4
 
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v4
 
+      - name: Configure kubeconfig
+        env:
+          KUBECONFIG_CONTENT: ${{ needs.terraform.outputs.kubeconfig }}
+        run: |
+          mkdir -p "$HOME/.kube"
+
+          printf '%s\n' "$KUBECONFIG_CONTENT" > "$HOME/.kube/config"
+
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Check Kubernetes cluster
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+
+      - name: Deploy
+        working-directory: infrastructure/kubernetes
+        run: |
+          kubectl apply -f .
+
+      - name: Check deployment
+        run: |
+          kubectl get pods
+          kubectl get services
