@@ -1,6 +1,7 @@
 name: Terraform deployment
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
 env:
   TF_VAR_API_TOKEN: "${{ secrets.TF_API_KEY }}"
@@ -10,6 +11,7 @@ env:
   TF_VAR_secret_key: "${{ secrets.SECRET_KEY }}"
 
 jobs:
+
   variable:
     name: Check variables
     runs-on: ubuntu-latest
@@ -26,11 +28,12 @@ jobs:
 
   terraform:
     name: Terraform
+    needs: [variable]
     runs-on: ubuntu-latest
     environment: env
 
     outputs:
-      kubeconfig: ${{ steps.terraform-output.outputs.kubeconfig }}
+      cluster_id: ${{ steps.terraform-output.outputs.cluster_id }}
 
     steps:
       - name: Code checkout
@@ -45,8 +48,8 @@ jobs:
         working-directory: infrastructure/terraform
         run: |
           terraform init \
-          -backend-config="access_key=${{ secrets.ACCESS_KEY }}" \
-          -backend-config="secret_key=${{ secrets.SECRET_KEY }}"
+            -backend-config="access_key=${{ secrets.ACCESS_KEY }}" \
+            -backend-config="secret_key=${{ secrets.SECRET_KEY }}"
 
       - name: Terraform plan
         working-directory: infrastructure/terraform
@@ -56,18 +59,19 @@ jobs:
         working-directory: infrastructure/terraform
         run: terraform apply -auto-approve
 
-      - name: Get Terraform kubeconfig
+      - name: Get cluster ID
         id: terraform-output
         working-directory: infrastructure/terraform
         run: |
-          kubeconfig=$(terraform output -raw kubeconfig)
-          echo "::add-mask::$kubeconfig"
+          cluster_id=$(terraform output -raw cluster_id)
 
-          {
-            echo "kubeconfig<<EOF"
-            echo "$kubeconfig"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          if [ -z "$cluster_id" ]; then
+            echo "ERROR: cluster_id is empty"
+            exit 1
+          fi
+
+          echo "cluster_id=$cluster_id" >> "$GITHUB_OUTPUT"
+
 
   kubernetes_deploy:
     name: Kubernetes
@@ -82,18 +86,40 @@ jobs:
       - name: Setup kubectl
         uses: azure/setup-kubectl@v4
 
+      - name: Install Scaleway CLI
+        run: |
+          curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sh
+
+      - name: Configure Scaleway CLI
+        env:
+          SCW_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+          SCW_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          SCW_DEFAULT_PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        run: |
+          scw init \
+            access-key="$SCW_ACCESS_KEY" \
+            secret-key="$SCW_SECRET_KEY" \
+            project-id="$SCW_DEFAULT_PROJECT_ID" \
+            send-telemetry=false
+
       - name: Configure kubeconfig
         env:
-          KUBECONFIG_CONTENT: ${{ needs.terraform.outputs.kubeconfig }}
+          CLUSTER_ID: ${{ needs.terraform.outputs.cluster_id }}
         run: |
+          if [ -z "$CLUSTER_ID" ]; then
+            echo "ERROR: cluster_id is empty"
+            exit 1
+          fi
+
           mkdir -p "$HOME/.kube"
 
-          printf '%s\n' "$KUBECONFIG_CONTENT" > "$HOME/.kube/config"
+          scw k8s kubeconfig get "$CLUSTER_ID" > "$HOME/.kube/config"
 
           chmod 600 "$HOME/.kube/config"
 
       - name: Check Kubernetes cluster
         run: |
+          kubectl config current-context
           kubectl cluster-info
           kubectl get nodes
 
