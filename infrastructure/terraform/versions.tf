@@ -11,8 +11,8 @@ terraform {
     endpoints = {
         s3 = "https://s3.fr-par.scw.cloud"
     }
-    access_key = "SCWB24FBNAM7YV47BG2Y"
-    secret_key = "87986698-7a8d-47db-9e33-9fa8c44d29e9"
+    access_key = var.access_key
+    secret_key = var.secret_key
     skip_credentials_validation = true
     skip_region_validation      = true
     skip_requesting_account_id  = true

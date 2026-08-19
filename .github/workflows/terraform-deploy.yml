@@ -3,11 +3,11 @@ name: Terraform deployment
 on: workflow_dispatch
 
 env:
-  TF_API_TOKEN: "${{ secrets.TF_API_KEY }}"
-  ACCESS_KEY: "${{ secrets.ACCESS_KEY }}"
-  ORGANIZATION_ID: "${{ secrets.ORGANIZATION_ID }}"
-  PROJECT_ID: "${{ secrets.PROJECT_ID }}"
-  SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+  TF_VAR_API_TOKEN: "${{ secrets.TF_API_KEY }}"
+  TF_VAR_access_key: "${{ secrets.ACCESS_KEY }}"
+  TF_VAR_organization_id: "${{ secrets.ORGANIZATION_ID }}"
+  TF_VAR_project_id: "${{ secrets.PROJECT_ID }}"
+  TF_VAR_secret_key: "${{ secrets.SECRET_KEY }}"
 
 jobs:
   variable:
@@ -17,11 +17,11 @@ jobs:
     steps:
       - name: Check environment variables
         run: |
-          [ -n "$TF_API_TOKEN" ] && echo "TF_API_TOKEN is set" || echo "TF_API_TOKEN is NOT set"
-          [ -n "$ACCESS_KEY" ] && echo "ACCESS_KEY is set" || echo "ACCESS_KEY is NOT set"
-          [ -n "$ORGANIZATION_ID" ] && echo "ORGANIZATION_ID is set" || echo "ORGANIZATION_ID is NOT set"
-          [ -n "$PROJECT_ID" ] && echo "PROJECT_ID is set" || echo "PROJECT_ID is NOT set"
-          [ -n "$SECRET_KEY" ] && echo "SECRET_KEY is set" || echo "SECRET_KEY is NOT set"
+          [ -n "$TF_VAR_API_TOKEN" ] && echo "TF_API_TOKEN is set" || echo "TF_API_TOKEN is NOT set"
+          [ -n "$TF_VAR_access_key" ] && echo "ACCESS_KEY is set" || echo "ACCESS_KEY is NOT set"
+          [ -n "$TF_VAR_organization_id" ] && echo "ORGANIZATION_ID is set" || echo "ORGANIZATION_ID is NOT set"
+          [ -n "$TF_VAR_project_id" ] && echo "PROJECT_ID is set" || echo "PROJECT_ID is NOT set"
+          [ -n "$TF_VAR_secret_key" ] && echo "SECRET_KEY is set" || echo "SECRET_KEY is NOT set"
 
   terraform:
     name: Terraform
