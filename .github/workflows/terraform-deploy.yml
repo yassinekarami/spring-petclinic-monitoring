@@ -92,7 +92,6 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }}
           secret-key: ${{ secrets.SECRET_KEY }}
           default-project-id: ${{ secrets.PROJECT_ID }}
-          default-organization-id: ${{ secrets.ORGANIZATION_ID }}
           
       - name: Configure kubeconfig
         env:
