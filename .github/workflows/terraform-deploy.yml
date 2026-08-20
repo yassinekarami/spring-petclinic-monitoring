@@ -97,7 +97,7 @@ jobs:
           SCW_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
           SCW_SECRET_KEY: ${{ secrets.SECRET_KEY }}
           SCW_DEFAULT_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          SCW_DEFAULT_ORGANIZATION_ID: $ {{ secrets.ORGANIZATION_ID }}
+          SCW_DEFAULT_ORGANIZATION_ID: ${{ secrets.ORGANIZATION_ID }}
           SCW_DEFAULT_REGION: fr-par
         run: |
           if [ -z "$CLUSTER_ID" ]; then
