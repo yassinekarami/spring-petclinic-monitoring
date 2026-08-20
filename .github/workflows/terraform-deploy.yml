@@ -105,6 +105,9 @@ jobs:
             exit 1
           fi
           mkdir -p "$HOME/.kube"
+          scw config info
+          scw k8s cluster list
+          scw k8s cluster get "$CLUSTER_ID"
           scw k8s kubeconfig get "$CLUSTER_ID" > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
