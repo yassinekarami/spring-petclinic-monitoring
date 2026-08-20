@@ -69,10 +69,8 @@ jobs:
             echo "ERROR: cluster_id is empty"
             exit 1
           fi
-
           echo "cluster_id=$cluster_id" >> "$GITHUB_OUTPUT"
-
-
+          
   kubernetes_deploy:
     name: Kubernetes
     needs: [terraform]
@@ -96,16 +94,17 @@ jobs:
       - name: Configure kubeconfig
         env:
           CLUSTER_ID: ${{ needs.terraform.outputs.cluster_id }}
+          SCW_ACCESS_KEY: ${{ secrets.SCW_ACCESS_KEY }}
+          SCW_SECRET_KEY: ${{ secrets.SCW_SECRET_KEY }}
+          SCW_DEFAULT_PROJECT_ID: ${{ secrets.SCW_PROJECT_ID }}
+          SCW_DEFAULT_REGION: fr-par
         run: |
           if [ -z "$CLUSTER_ID" ]; then
             echo "ERROR: cluster_id is empty"
             exit 1
           fi
-
           mkdir -p "$HOME/.kube"
-
           scw k8s kubeconfig get "$CLUSTER_ID" > "$HOME/.kube/config"
-
           chmod 600 "$HOME/.kube/config"
 
       - name: Check Kubernetes cluster
