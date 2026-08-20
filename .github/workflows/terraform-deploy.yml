@@ -96,7 +96,7 @@ jobs:
           CLUSTER_ID: ${{ needs.terraform.outputs.cluster_id }}
           SCW_ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
           SCW_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          SCW_DEFAULT_PROJECT_ID: ${{ secrets.PROKECT_ID }}
+          SCW_DEFAULT_PROJECT_ID: ${{ secrets.PROJECT_ID }}
           SCW_DEFAULT_REGION: fr-par
         run: |
           if [ -z "$CLUSTER_ID" ]; then
