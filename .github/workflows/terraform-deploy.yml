@@ -120,7 +120,7 @@ jobs:
       - name: Deploy
         working-directory: infrastructure/kubernetes
         run: |
-          kubectl apply -f .
+          kubectl apply -f petclinic.yml
 
       - name: Check deployment
         run: |
