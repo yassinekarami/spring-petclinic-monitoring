@@ -117,14 +117,36 @@ jobs:
           kubectl cluster-info
           kubectl get nodes
 
-      - name: Deploy
+      - name: Deploy Kubernetes
         working-directory: infrastructure/kubernetes
         run: |
           kubectl apply -f namespace.yml
           kubectl apply -f petclinic.yml
           kubectl apply -f k6.yml
 
-      - name: Check deployment
+      - name: Check Kubernetes deployment
         run: |
           kubectl get pods
           kubectl get services
+
+      - name: Setup HELM
+        uses: azure/setup-helm@v5
+        with:
+          version: 'latest'
+        id: install
+
+      - name: Add Prometheus Helm repository
+        run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+
+      - name: Install Prometheus + Grafana
+        run: |
+          helm upgrade --install monitoring \
+            prometheus-community/kube-prometheus-stack \
+            --namespace monitoring \
+            --set grafana.adminPassword="grafana"
+      
+
+
+
