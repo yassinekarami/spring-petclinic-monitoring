@@ -46,10 +46,7 @@ jobs:
 
       - name: Terraform init
         working-directory: infrastructure/terraform
-        run: |
-          terraform init \
-            -backend-config="access_key=${{ secrets.ACCESS_KEY }}" \
-            -backend-config="secret_key=${{ secrets.SECRET_KEY }}"
+        run: terraform init
 
       - name: Terraform plan
         working-directory: infrastructure/terraform
@@ -70,7 +67,7 @@ jobs:
             exit 1
           fi
           echo "cluster_id=$cluster_id" >> "$GITHUB_OUTPUT"
-          
+
   kubernetes_deploy:
     name: Kubernetes
     needs: [terraform]
@@ -90,7 +87,7 @@ jobs:
           access-key: ${{ secrets.ACCESS_KEY }}
           secret-key: ${{ secrets.SECRET_KEY }}
           default-project-id: ${{ secrets.PROJECT_ID }}
-          
+
       - name: Configure kubeconfig
         env:
           CLUSTER_ID: ${{ needs.terraform.outputs.cluster_id }}
@@ -120,6 +117,7 @@ jobs:
       - name: Deploy
         working-directory: infrastructure/kubernetes
         run: |
+          kubectl apply -f namespace.yml
           kubectl apply -f petclinic.yml
 
       - name: Check deployment
