@@ -8,3 +8,5 @@ helm upgrade prometheus prometheus-community/kube-prometheus-stack \
 
 
 cp ~/kubeconfig-demo-k8s.yaml ~/.kube/config
+
+cp ~/kubeconfig-petclinic-monitoring-k8s.yaml ~/.kube/config

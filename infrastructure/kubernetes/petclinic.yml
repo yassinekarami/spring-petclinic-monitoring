@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: ghcr.io/yassinekarami/petclinic-montoring:latest
+          image: ghcr.io/yassinekarami/petclinic-monitoring:latest
           imagePullPolicy: IfNotPresent
           ports:
             - name: petclinic-port
@@ -86,16 +86,16 @@ spec:
       nodePort: 31000
 
 ---
-#apiVersion: monitoring.coreos.com/v1
-#kind: ServiceMonitor
-#metadata:
-#  name: spring-petclinic
-# labels:
-#    release: prometheus
-#spec:
-#  selector:
-#    matchLabels:
-#      app: petclinic-service
- # endpoints:
- #   - port: petclinic-port
- #     path: /actuator/prometheus
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: spring-petclinic
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: petclinic-service
+  endpoints:
+     - port: petclinic-port
+       path: /actuator/prometheus
