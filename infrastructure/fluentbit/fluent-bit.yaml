@@ -1,0 +1,29 @@
+pipeline:
+  inputs:
+    - name: "tail"
+      path: "var/log/containers/*petclinic*.log"
+      buffer_chunk_size: 32KB
+      buffer_max_size: 256KB
+      read_from_head: false
+      multiline.parser: docker, cri, springboot
+
+  multiline_parsers:
+    - name: springboot
+      type: regex
+      flush_timeout: 1000
+      rules:
+        - state: start_state
+          regex: '/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}[,.]\d{3}\s+.*/'
+          next_state: cont
+
+        - state: cont
+          regex: '/^(?!\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}:\d{2}[,.]\d{3}\s+).*/'
+          next_state: cont
+
+
+  outputs:
+    - name: es
+      match: '*'
+      host: "host"
+      port: 9200
+      index: my_index
