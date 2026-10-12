@@ -123,6 +123,11 @@ jobs:
           version: 'latest'
         id: install
 
+      - name: Create Kubernetes namespaces
+        working-directory: infrastructure/kubernetes
+        run: |
+          kubectl apply -f namespace.yml
+
       - name: Add Prometheus + FluentBit + ECK Helm repository
         run: |
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -146,7 +151,6 @@ jobs:
       - name: Deploy Kubernetes
         working-directory: infrastructure/kubernetes
         run: |
-          kubectl apply -f namespace.yml
           kubectl apply -f petclinic.yml
           kubectl apply -f k6.yml
           kubectl apply -f monitoring-service.yml
