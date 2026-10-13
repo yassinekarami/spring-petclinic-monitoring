@@ -20,4 +20,5 @@ resource "scaleway_k8s_pool" "this" {
   max_size = 1
 
   wait_for_pool_ready = true
+  security_group_id   = scaleway_instance_security_group.sg01.id
 }
