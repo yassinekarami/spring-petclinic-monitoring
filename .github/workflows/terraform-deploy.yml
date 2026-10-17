@@ -34,6 +34,7 @@ jobs:
 
     outputs:
       cluster_id: ${{ steps.terraform-output.outputs.cluster_id }}
+      cluster_loadbalancer_ip: ${{ steps.terraform-output.outputs.cluster_loadbalancer_ip }}
 
     steps:
       - name: Code checkout
@@ -59,18 +60,19 @@ jobs:
         working-directory: infrastructure/terraform
         run: terraform apply -auto-approve
 
-      - name: Get cluster ID
+      - name: Get Terraform ouput
         id: terraform-output
         working-directory: infrastructure/terraform
         run: |
           cluster_id=$(terraform output -raw cluster_id)
-
+          cluster_loadbalancer_ip=$(terraform output -raw cluster_loadbalancer_ip)
           if [ -z "$cluster_id" ]; then
             echo "ERROR: cluster_id is empty"
             exit 1
           fi
           echo "cluster_id=$cluster_id" >> "$GITHUB_OUTPUT"
-
+          echo "cluster_loadbalancer_ip=$cluster_loadbalancer_ip" >> "$GITHUB_OUTPUT"
+  
   kubernetes_deploy:
     name: Kubernetes
     needs: [terraform]
@@ -145,7 +147,10 @@ jobs:
 
       - name: Install Ingress Controller
         working-directory: infrastructure/kubernetes
+        env:
+          CLUSTER_LOADBALANCER_ID_ADDRESS: ${{ needs.terraform.outputs.cluster_loadbalancer_ip }}
         run: |
+          envsubst < ingress-values.yaml > ingress-values.generated.yaml
           helm install ingress-nginx ingress-nginx/ingress-nginx 
             -f ingress-values.yaml 
             --namespace ingress-nginx --create-namespace
