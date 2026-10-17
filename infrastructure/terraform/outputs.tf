@@ -9,3 +9,9 @@ output "cluster_id" {
   sensitive   = true
   value       = scaleway_k8s_cluster.this.id
 }
+
+output "cluster_loadbalancer_ip" {
+  description = "The cluster ip address"
+  sensitive   = false
+  value       = scaleway_lb_ip.this.ip_address
+}
