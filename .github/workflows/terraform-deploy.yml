@@ -143,6 +143,15 @@ jobs:
             --namespace monitoring \
             --set grafana.adminPassword="grafana"
 
+      - name: Install Ingress Controller
+        working-directory: infrastructure/kubernetes
+        run: |
+          helm install ingress-nginx ingress-nginx/ingress-nginx 
+            -f ingress-values.yaml 
+            --namespace ingress-nginx --create-namespace
+
+        
+
       - name: Install ECK
         run: |
           helm upgrade --install elastic-operator elastic/eck-operator \
