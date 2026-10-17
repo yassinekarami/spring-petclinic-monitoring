@@ -1,7 +1,7 @@
 controller:
   service:
     type: LoadBlancer
-    loadBalancerIP: ""
+    loadBalancerIP: "${CLUSTER_LOADBALANCER_ID_ADDRESS}"
     annotations:
       service.beta.kubernetes.io/scw-loadblander-proxy-protocaol-v2: "true"
       service.beta.kubernetes.io/scw-loadbalancer-use-hostname: "true
