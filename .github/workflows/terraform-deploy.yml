@@ -160,6 +160,7 @@ jobs:
           kubectl apply -f monitoring-service.yml
           kubectl apply -f elastic.yml
           kubectl apply -f alerts-rules.yml
+          kubectl apply -f grafana-dashboard.yml
 
       - name: Install Ingress Controller
         working-directory: infrastructure/kubernetes
