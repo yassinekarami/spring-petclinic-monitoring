@@ -67,23 +67,23 @@ data:
     management.health.livenessstate.enabled=true
     management.health.readinessstate.enabled=true
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: petclinic-service
-  labels:
-    app: petclinic-service
-spec:
-  selector:
-    app: petclinic
-  type: NodePort
-  ports:
-    - name: petclinic-port
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 31000
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: petclinic-service
+#  labels:
+#    app: petclinic-service
+#spec:
+#  selector:
+#    app: petclinic
+#  type: NodePort
+#  ports:
+#    - name: petclinic-port
+#      protocol: TCP
+#      port: 8080
+#      targetPort: 8080
+#      nodePort: 31000
 
 ---
 apiVersion: monitoring.coreos.com/v1
