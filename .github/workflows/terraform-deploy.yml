@@ -152,7 +152,7 @@ jobs:
         run: |
           envsubst < ingress-values.yml > ingress-values.generated.yml
           helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-            -f ingress-values.yml \
+            -f ingress-values.generated.yml \
             --namespace ingress-nginx --create-namespace
 
         
