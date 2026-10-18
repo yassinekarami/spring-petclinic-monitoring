@@ -139,12 +139,13 @@ jobs:
           helm repo update
 
       - name: Install Prometheus + Grafana
+        working-directory: infrastructure/kubernetes
         run: |
           helm upgrade --install monitoring \
             prometheus-community/kube-prometheus-stack \
             --namespace monitoring \
-            --set grafana.adminPassword="grafana"
-
+            -f monitoring-values.yml
+            
       - name: Install Ingress Controller
         working-directory: infrastructure/kubernetes
         env:
