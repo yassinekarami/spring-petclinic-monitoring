@@ -145,18 +145,6 @@ jobs:
             prometheus-community/kube-prometheus-stack \
             --namespace monitoring \
             -f monitoring-values.yml
-            
-      - name: Install Ingress Controller
-        working-directory: infrastructure/kubernetes
-        env:
-          CLUSTER_LOADBALANCER_ID_ADDRESS: ${{ needs.terraform.outputs.cluster_loadbalancer_ip }}
-        run: |
-          envsubst < ingress-values.yml > ingress-values.generated.yml
-          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
-            -f ingress-values.generated.yml \
-            --namespace ingress-nginx --create-namespace
-
-        
 
       - name: Install ECK
         run: |
@@ -171,6 +159,16 @@ jobs:
           kubectl apply -f k6.yml
           kubectl apply -f monitoring-service.yml
           kubectl apply -f elastic.yml
+
+      - name: Install Ingress Controller
+        working-directory: infrastructure/kubernetes
+        env:
+          CLUSTER_LOADBALANCER_ID_ADDRESS: ${{ needs.terraform.outputs.cluster_loadbalancer_ip }}
+        run: |
+          envsubst < ingress-values.yml > ingress-values.generated.yml
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            -f ingress-values.generated.yml \
+            --namespace ingress-nginx --create-namespace
 
       - name: Check Kubernetes deployment
         run: |
