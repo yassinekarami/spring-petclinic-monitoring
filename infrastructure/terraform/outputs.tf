@@ -13,5 +13,5 @@ output "cluster_id" {
 output "cluster_loadbalancer_ip" {
   description = "Public IP of the ingress load balancer"
   sensitive   = false
-  value       = scaleway_k8s_pool.this.public_ip
+  value       = scaleway_k8s_pool.this.nodes[0].public_ip
 }
