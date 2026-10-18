@@ -151,8 +151,8 @@ jobs:
           CLUSTER_LOADBALANCER_ID_ADDRESS: ${{ needs.terraform.outputs.cluster_loadbalancer_ip }}
         run: |
           envsubst < ingress-values.yml > ingress-values.generated.yml
-          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx 
-            -f ingress-values.yml 
+          helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+            -f ingress-values.yml \
             --namespace ingress-nginx --create-namespace
 
         
