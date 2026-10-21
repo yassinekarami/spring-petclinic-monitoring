@@ -12,13 +12,13 @@ resource "scaleway_k8s_cluster" "this" {
 resource "scaleway_k8s_pool" "this" {
   cluster_id = scaleway_k8s_cluster.this.id
   name       = "main"
-  node_type  = "DEV1-M"
+  node_type  = "COMPUTES-X4C-8G"
   size       = 1
   autoscaling = false
   autohealing = true
   min_size = 1
   max_size = 1
-  zone     = "fr-par-2" 
+  zone     = "fr-par-1" 
   wait_for_pool_ready = true
   security_group_id   = scaleway_instance_security_group.sg01.id
 }
