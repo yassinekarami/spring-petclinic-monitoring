@@ -18,7 +18,7 @@ resource "scaleway_k8s_pool" "this" {
   autohealing = true
   min_size = 1
   max_size = 1
-
+  zone     = "fr-par-2" 
   wait_for_pool_ready = true
   security_group_id   = scaleway_instance_security_group.sg01.id
 }
