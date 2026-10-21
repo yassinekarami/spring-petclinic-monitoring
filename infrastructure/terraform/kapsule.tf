@@ -12,7 +12,7 @@ resource "scaleway_k8s_cluster" "this" {
 resource "scaleway_k8s_pool" "this" {
   cluster_id = scaleway_k8s_cluster.this.id
   name       = "main"
-  node_type  = "BASIC3-X2C-8G"
+  node_type  = "DEV1-M"
   size       = 1
   autoscaling = false
   autohealing = true
