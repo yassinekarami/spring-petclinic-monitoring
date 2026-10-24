@@ -79,5 +79,5 @@ spec:
               service:
                 name: elastic-kb-http
                 port:
-                  number: 5601
+                  number: 80
 
