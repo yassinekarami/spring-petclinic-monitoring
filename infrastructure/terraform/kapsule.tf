@@ -24,6 +24,5 @@ resource "scaleway_k8s_pool" "this" {
   zone        = "fr-par-2" 
   
   wait_for_pool_ready = true
-  security_group_id   = scaleway_instance_security_group.sgrs01.id
 }
 
