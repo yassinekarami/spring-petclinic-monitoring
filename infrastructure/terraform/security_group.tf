@@ -1,6 +1,6 @@
 resource "scaleway_instance_security_group" "sg01" {
   external_rules = true
-  zone           = "fr-par-2"
+  zone           = "fr-par-1"
 }
 
 resource "scaleway_instance_security_group_rules" "sgrs01" {
