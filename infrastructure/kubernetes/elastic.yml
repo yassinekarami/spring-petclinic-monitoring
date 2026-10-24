@@ -32,6 +32,9 @@ metadata:
 spec:
   version: 8.19.8
   count: 1
+  config:
+    server.basePath: /kibana
+    server.rewriteBasePath: true
   elasticsearchRef:
     name: elastic
   http:
