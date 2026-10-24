@@ -66,15 +66,29 @@ class VetController {
 	}
 
 	@GetMapping({ "/vets" })
-	public @ResponseBody Vets showResourcesVetList() {
-		// Here we are returning an object of type 'Vets' rather than a collection of Vet
-		// objects so it is simpler for JSon/Object mapping
-		Vets vets = new Vets();
-		vets.getVetList().addAll(this.vetRepository.findAll());
-		vets.getVetList().forEach(v -> {
-			log.info(v.getFirstName() + " " +v.getLastName());
-		});
-		return vets;
-	}
+public @ResponseBody Vets showResourcesVetList() {
+    log.info("GET /vets - Starting vets retrieval");
+
+    Vets vets = new Vets();
+    vets.getVetList().addAll(this.vetRepository.findAll());
+
+    log.info("GET /vets - Retrieved {} vets", vets.getVetList().size());
+
+    vets.getVetList().forEach(v -> {
+        log.info("Vet details: {} {}", v.getFirstName(), v.getLastName());
+    });
+
+    try {
+        log.info("Simulating multiline log for Fluent Bit");
+        throw new RuntimeException(
+            "Fake exception for Fluent Bit multiline testing"
+        );
+    } catch (RuntimeException e) {
+        log.error("GET /vets - Simulated error while processing vets", e);
+    }
+
+    log.info("GET /vets - Request completed successfully");
+    return vets;
+}
 
 }
