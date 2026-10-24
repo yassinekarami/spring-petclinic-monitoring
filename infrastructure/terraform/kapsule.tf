@@ -21,7 +21,7 @@ resource "scaleway_k8s_pool" "this" {
   min_size    = 1
   max_size    = 1
   
-  zone        = "fr-par-2" 
+  zone        = "fr-par-1" 
   
   wait_for_pool_ready = true
 }
