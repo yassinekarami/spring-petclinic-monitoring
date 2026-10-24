@@ -77,7 +77,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: elastic-service
+                name: elastic-kb-http
                 port:
-                  number: 9200
+                  number: 5601
 
