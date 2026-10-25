@@ -35,6 +35,8 @@ spec:
   config:
     server.basePath: /kibana
     server.rewriteBasePath: true
+    elasticsearch.username: "kibana"
+    elasticsearch.password: "kibana"
   elasticsearchRef:
     name: elastic
   http:
